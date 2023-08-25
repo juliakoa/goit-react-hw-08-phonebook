@@ -1,7 +1,6 @@
 // pages/Contacts.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import UserMenu from '../components/UserMenu';
 
 const Contacts = ({ user }) => {
   const [contacts, setContacts] = useState([]);
