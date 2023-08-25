@@ -1,36 +1,46 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchContacts } from 'store/contactSlice';
-import ContactForm from './ContactForm/ContactForm';
-import ContactList from './ContactList/ContactList';
-import Filter from './Filter/Filter';
-import { setFilter } from 'store/filterSlice';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import Navigation from './Navigation';
+import Register from 'pages/Register';
+import Login from 'pages/Login';
+import PrivateRoute from 'pages/PrivateRoute';
+import Home from 'pages/Home'; // Import komponentu Home
 import css from './App.module.css';
+import { selectUser, setUser } from 'store/userSlice';
 
 const App = () => {
-  const contacts = useSelector(state => state.contacts);
-  const filter = useSelector(state => state.filter.filter);
+  const [isEffectCompleted, setIsEffectCompleted] = useState(false);
   const dispatch = useDispatch();
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter)
-  );
-
   useEffect(() => {
-    dispatch(fetchContacts());
+    const storedUserData = JSON.parse(localStorage.getItem('userData'));
+    if (storedUserData) {
+      dispatch(
+        setUser({
+          user: storedUserData.user,
+          email: storedUserData.user.email,
+          token: storedUserData.token,
+        })
+      );
+    }
+    setIsEffectCompleted(true); // Oznacz efekt jako zakończony
   }, [dispatch]);
 
-  const handleFilterChange = event => {
-    dispatch(setFilter(event.target.value));
-  };
+  const user = useSelector(selectUser);
 
   return (
     <div className={css.container}>
       <h1 className={css.title}>Phonebook</h1>
-      <ContactForm />
-      <h2 className={css.subtitle}>Contacts</h2>
-      <Filter filter={filter} handleFilterChange={handleFilterChange} />
-      <ContactList contacts={filteredContacts} />
+      <Navigation user={user} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        {isEffectCompleted && user && (
+          <Route path="/contacts" element={<PrivateRoute user={user} />} />
+        )}
+      </Routes>
     </div>
   );
 };

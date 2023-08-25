@@ -1,36 +1,66 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const API_ENDPOINT = 'https://64e4d67cc55563802913d587.mockapi.io';
+const API_BASE_URL = 'https://connections-api.herokuapp.com';
 
-const fetchContacts = createAsyncThunk('contacts/fetchContacts', async () => {
-  const response = await axios.get(`${API_ENDPOINT}/contacts`);
-  return response.data;
-});
+const fetchContacts = createAsyncThunk(
+  'contacts/fetchContacts',
+  async (_, thunkAPI) => {
+    try {
+      const token = localStorage.getItem('token'); // Retrieve token from localStorage
+      if (!token) {
+        throw new Error('Token not found');
+      }
 
-const addContact = createAsyncThunk('contacts/addContact', async contact => {
-  const response = await axios.post(`${API_ENDPOINT}/contacts`, contact);
-  return response.data;
-});
+      const response = await axios.get(`${API_BASE_URL}/contacts`, {
+        headers: { Authorization: token },
+      });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
 
-const updateContact = createAsyncThunk(
-  'contacts/updateContact',
-  async contact => {
-    const response = await axios.put(
-      `${API_ENDPOINT}/contacts/${contact.id}`,
-      contact
-    );
-    return response.data;
+const addContact = createAsyncThunk(
+  'contacts/addContact',
+  async (contact, thunkAPI) => {
+    try {
+      const token = localStorage.getItem('token'); // Retrieve token from localStorage
+      if (!token) {
+        throw new Error('Token not found');
+      }
+
+      const response = await axios.post(`${API_BASE_URL}/contacts`, contact, {
+        headers: { Authorization: token },
+      });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
   }
 );
 
 const deleteContact = createAsyncThunk(
   'contacts/deleteContact',
-  async contactId => {
-    await axios.delete(`${API_ENDPOINT}/contacts/${contactId}`);
-    return contactId;
+  async (contactId, thunkAPI) => {
+    try {
+      const token = localStorage.getItem('token'); // Retrieve token from localStorage
+      if (!token) {
+        throw new Error('Token not found');
+      }
+
+      await axios.delete(`${API_BASE_URL}/contacts/${contactId}`, {
+        headers: { Authorization: token },
+      });
+      return contactId;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
   }
 );
+
+// ... (similarly, you can adjust updateContact if needed)
 
 const contactSlice = createSlice({
   name: 'contacts',
@@ -44,22 +74,12 @@ const contactSlice = createSlice({
       .addCase(addContact.fulfilled, (state, action) => {
         state.push(action.payload);
       })
-      .addCase(updateContact.fulfilled, (state, action) => {
-        const updatedContact = action.payload;
-        const index = state.findIndex(
-          contact => contact.id === updatedContact.id
-        );
-        if (index !== -1) {
-          state[index] = updatedContact;
-        }
-      })
       .addCase(deleteContact.fulfilled, (state, action) => {
-        const contactId = action.payload;
-        return state.filter(contact => contact.id !== contactId);
+        return state.filter(contact => contact.id !== action.payload);
       });
   },
 });
 
-export { fetchContacts, addContact, updateContact, deleteContact };
+export { fetchContacts, addContact, deleteContact };
 
 export default contactSlice.reducer;

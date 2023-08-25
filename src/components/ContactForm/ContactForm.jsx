@@ -6,34 +6,34 @@ import css from './ContactForm.module.css';
 const ContactForm = () => {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [number, setNumber] = useState('');
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (name.trim() && phone.trim()) {
-      dispatch(addContact({ name, phone }));
+    if (name.trim() && number.trim()) {
+      dispatch(addContact({ name, number })); // Use "number" instead of "phone"
       setName('');
-      setPhone('');
+      setNumber('');
     }
   };
 
   return (
-    <form className={css.form} onSubmit={handleSubmit}>
+    <form className={css['form']} onSubmit={handleSubmit}>
       <input
         type="text"
         placeholder="Name"
         value={name}
-        className={css.input}
+        className={css['input']}
         onChange={e => setName(e.target.value)}
       />
       <input
         type="text"
         placeholder="Phone"
-        value={phone}
-        onChange={e => setPhone(e.target.value)}
+        value={number} // Use "number" instead of "phone"
+        onChange={e => setNumber(e.target.value)} // Use "number" instead of "phone"
         className={css.input}
       />
-      <button className={css.button} type="submit">
+      <button className={css['add-contact-button']} type="submit">
         Add Contact
       </button>
     </form>

@@ -1,21 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router } from 'react-router-dom'; // Użyj tylko głównego routera
 import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
-import rootReducer from './store/contactSlice';
-import App from 'components/App';
-import filterReducer from './store/filterSlice';
-
-const store = configureStore({
-  reducer: {
-    contacts: rootReducer,
-    filter: filterReducer,
-  },
-});
+import App from './components/App';
+import store from 'store/store';
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <React.StrictMode>
+    <Router>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </Router>
+  </React.StrictMode>,
   document.getElementById('root')
 );

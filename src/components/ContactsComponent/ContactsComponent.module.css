@@ -1,0 +1,43 @@
+.contacts-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 2rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.contact-list {
+  list-style: none;
+  padding: 0;
+}
+
+.contact-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.contact-name {
+  font-size: 1.2rem;
+}
+
+.contact-number {
+  color: #777;
+  font-size: 1.2rem;
+}
+
+.add-contact-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.add-contact-button:hover {
+  background-color: #555;
+}

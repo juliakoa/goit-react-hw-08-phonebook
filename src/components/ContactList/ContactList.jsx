@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { deleteContact } from 'store/contactSlice';
-import css from './ContactList.module.css';
+import css from '../ContactsComponent/ContactsComponent.module.css';
 
 const ContactList = ({ contacts }) => {
   const dispatch = useDispatch();
@@ -11,10 +11,12 @@ const ContactList = ({ contacts }) => {
   };
 
   return (
-    <ul className={css.list}>
+    <ul className={css['contact-list']}>
       {contacts.map(contact => (
-        <li className={css.listItem} key={contact.id}>
-          {contact.name} - {contact.phone}
+        <li className={css['contact-item']} key={contact.id}>
+          <p className={css['contact-name']}>{contact.name}</p>-{' '}
+          <p className={css['contact-number']}>{contact.number}</p>
+          {/* Użyj "number" zamiast "phone" */}
           <button
             className={css.deleteButton}
             onClick={() => handleDelete(contact.id)}
